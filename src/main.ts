@@ -14,6 +14,10 @@ async function bootstrap() {
     }),
   );
 
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
   app.use('/api/v1/ai', authMiddleware, proxy(process.env.TEXT_AI_URL));
   app.use('/api/v1', proxy(process.env.AUTH_URL));
 
