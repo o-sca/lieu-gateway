@@ -11,9 +11,12 @@ export const authMiddleware = async (
       return res.status(401).send({ message: 'Unauthorized' });
     }
 
-    const response = await axios.get('http://localhost:8001/checklogin', {
-      headers: { cookie: req.headers.cookie },
-    });
+    const response = await axios.get(
+      `${process.env.AUTH_URL}/api/v1/auth/checklogin`,
+      {
+        headers: { cookie: req.headers.cookie },
+      },
+    );
 
     if (response.data.authenticated !== true) {
       return res.status(401).send({ message: 'Unauthorized' });
