@@ -8,7 +8,7 @@ export const authMiddleware = async (
 ) => {
   try {
     if (!req.headers.cookie || !req.headers.cookie.includes('connect.sid')) {
-      return res.status(401).send({ message: 'Unauthorized' });
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     const response = await axios.get(
@@ -19,12 +19,12 @@ export const authMiddleware = async (
     );
 
     if (response.data.authenticated !== true) {
-      return res.status(401).send({ message: 'Unauthorized' });
+      return res.status(401).send({ error: 'Unauthorized' });
     }
 
     next();
   } catch (err) {
     console.error(err);
-    return res.status(500).send({ message: 'Internal Server Error' });
+    return res.status(500).send({ error: 'Internal Server Error' });
   }
 };
