@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as cors from 'cors';
 import * as proxy from 'express-http-proxy';
-import helmet from 'helmet';
 import { authMiddleware } from './auth.middleware';
 
 async function bootstrap() {
@@ -14,8 +13,6 @@ async function bootstrap() {
       methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'HEAD'],
     }),
   );
-
-  app.use(helmet());
 
   app.use('/api/v1/ai', authMiddleware, proxy(process.env.TEXT_AI_URL));
   app.use('/api/v1', proxy(process.env.AUTH_URL));
