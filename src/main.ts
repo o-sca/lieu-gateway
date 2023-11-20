@@ -11,7 +11,7 @@ async function bootstrap() {
     cors({
       origin: ['http://localhost:4200', /\.vercel\.app$/],
       credentials: true,
-      methods: ['GET', 'POST', 'OPTIONS'],
+      methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'HEAD'],
     }),
   );
 
