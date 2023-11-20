@@ -19,7 +19,7 @@ async function bootstrap() {
   }
 
   app.use('/api/v1/ai', authMiddleware, proxy(process.env.TEXT_AI_URL));
-  app.use('/api/v1', proxy(process.env.AUTH_URL));
+  app.use('/api/v1/auth', proxy(process.env.AUTH_URL));
   app.use('*', (_req, res) => {
     return res.status(404);
   });

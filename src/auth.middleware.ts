@@ -12,7 +12,7 @@ export const authMiddleware = async (
     }
 
     const response = await axios.get(
-      `${process.env.AUTH_URL}/api/v1/auth/checklogin`,
+      `http://${process.env.AUTH_URL}/checklogin`,
       {
         headers: { cookie: req.headers.cookie },
       },
