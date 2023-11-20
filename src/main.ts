@@ -20,6 +20,9 @@ async function bootstrap() {
 
   app.use('/api/v1/ai', authMiddleware, proxy(process.env.TEXT_AI_URL));
   app.use('/api/v1', proxy(process.env.AUTH_URL));
+  app.use('*', (_req, res) => {
+    return res.status(404);
+  });
 
   app.listen(process.env.PORT || 3000, () => {
     console.log('Serving on port:', process.env.PORT || 3000);
