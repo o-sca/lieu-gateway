@@ -7,7 +7,8 @@ export const authMiddleware = async (
   next: NextFunction,
 ) => {
   try {
-    if (!req.headers.cookie || !req.headers.cookie.includes('connect.sid')) {
+    const token = req.cookies['lieu.sid'];
+    if (!token) {
       return res.status(401).send({ error: 'Unauthorized' });
     }
 

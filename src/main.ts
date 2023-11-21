@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as proxy from 'express-http-proxy';
 import { authMiddleware } from './auth.middleware';
@@ -6,6 +7,7 @@ import { authMiddleware } from './auth.middleware';
 async function bootstrap() {
   const app = express();
 
+  app.use(cookieParser());
   app.use(
     cors({
       origin: ['http://localhost:4200', /\.vercel\.app$/],
