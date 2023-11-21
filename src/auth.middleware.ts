@@ -20,7 +20,7 @@ export const authMiddleware = async (
     );
 
     if (response.data.authenticated !== true) {
-      return res.status(401).send({ error: 'Unauthorized' });
+      return res.status(403).send({ error: 'Unauthorized' });
     }
 
     next();
