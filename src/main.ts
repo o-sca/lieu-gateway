@@ -33,6 +33,7 @@ async function bootstrap() {
   app.use('/api/v1/auth', proxy(process.env.AUTH_URL));
   app.use('*', (_req, res) => {
     return res.status(404);
+    return res.status(404).send();
   });
 
   app.listen(process.env.PORT || 3000, () => {
