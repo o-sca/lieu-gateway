@@ -52,6 +52,9 @@ async function bootstrap() {
         if (req.path === '/create' || req.path === '/insert') {
           return false;
         }
+        if (req.path === '/all' && req['user']['user_type'] !== 'ADMIN') {
+          return false;
+        }
         return true;
       },
       proxyReqPathResolver: (req) => {
