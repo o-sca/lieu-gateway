@@ -16,39 +16,89 @@
       "url": "https://stingray-app-x6rzq.ondigitalocean.app/api/v1"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "lieu.sid"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "lieu@gmail.com"
+          },
+          "username": {
+            "type": "string",
+            "example": "lieu"
+          },
+          "password": {
+            "type": "string",
+            "example": "123abcABC((("
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "john"
+          },
+          "password": {
+            "type": "string",
+            "example": "123"
+          }
+        }
+      },
+      "SummariseText": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "This is a sample text"
+          }
+        }
+      },
+      "GenerateText": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "This is a sample text"
+          }
+        }
+      },
+      "UserTypeRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "number",
+            "example": "1"
+          },
+          "userType": {
+            "type": "string",
+            "example": "ADMIN"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "cookieAuth": []
+    }
+  ],
   "paths": {
-    "/checklogin": {
+    "/auth/checklogin": {
       "get": {
         "tags": ["login status check"],
         "summary": "Check login status of user",
         "description": "Check if the user is authenticated based on the provided token",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "query",
-            "description": "JWT token for user authentication",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Request body for checking login status",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -63,7 +113,7 @@
         }
       }
     },
-    "/signup": {
+    "/auth/signup": {
       "post": {
         "tags": ["signup"],
         "summary": "Sign up for lieu services",
@@ -113,7 +163,7 @@
         }
       }
     },
-    "/login": {
+    "/auth/login": {
       "post": {
         "tags": ["login user"],
         "summary": "User login",
@@ -158,27 +208,11 @@
         }
       }
     },
-    "/logout": {
+    "/auth/logout": {
       "get": {
         "tags": ["logout user"],
         "summary": "User logout",
         "description": "Destroys the user's cookie/session",
-        "requestBody": {
-          "description": "Request body for user logout",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "token": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful operation!",
@@ -203,22 +237,11 @@
         }
       }
     },
-    "/me": {
+    "/auth/me": {
       "get": {
         "tags": ["user data"],
         "summary": "User data",
         "description": "Get user object credentials/information",
-        "requestBody": {
-          "description": "Request body for user data",
-          "required": true,
-          "content": {
-            "application/json": {
-              "example": {
-                "user": "request user object"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful operation!",
@@ -233,43 +256,234 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "User": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "lieu@gmail.com"
+    },
+    "/ai/text/summarise": {
+      "post": {
+        "tags": ["Summarise Text"],
+        "summary": "Summarise text",
+        "description": "provide input text to be summarised",
+        "requestBody": {
+          "description": "Request body for text input",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummariseText"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sucessful operation!",
+            "content": {
+              "application/json": {
+                "example": {
+                  "text_summary": "This is a summary of the text"
+                }
+              }
+            }
           },
-          "username": {
-            "type": "string",
-            "example": "lieu"
+          "401": {
+            "description": "Unauthorized"
           },
-          "password": {
-            "type": "string",
-            "example": "123abcABC((("
+          "500": {
+            "description": "Internal Server Error"
           }
         }
-      },
-      "UserLogin": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "type": "string",
-            "example": "john"
+      }
+    },
+    "/ai/gen/generate": {
+      "post": {
+        "tags": ["Generate Text"],
+        "summary": "Generate text",
+        "description": "provide input text to be generated",
+        "requestBody": {
+          "description": "Request body for text input",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateText"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sucessful operation!",
+            "content": {
+              "application/json": {
+                "example": {
+                  "text_summary": "generated text"
+                }
+              }
+            }
           },
-          "password": {
-            "type": "string",
-            "example": "123"
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/requests": {
+      "get": {
+        "tags": ["Get Current User Request History"],
+        "summary": "Get current users request logs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "request_id": 7,
+                    "input": "After checking these points, you should be able to identify and fix the issue. If the problem persis",
+                    "output": "I am a text summary",
+                    "user_id": 2,
+                    "createdAt": "2023-11-26T20:50:24.000Z"
+                  },
+                  {
+                    "request_id": 12,
+                    "input": "After barely surviving Thunder, Roderick lands a spot as a surgeon’s mate on the Lizard, which is sa",
+                    "output": "made up text summary generated using my 2 bare hands",
+                    "user_id": 2,
+                    "createdAt": "2023-11-26T23:58:13.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/requests/all": {
+      "get": {
+        "tags": ["[ADMIN] - Get All User Request History"],
+        "summary": "Get all user request logs",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "request_id": 7,
+                    "input": "After checking these points, you should be able to identify and fix the issue. If the problem persis",
+                    "output": "I am a text summary",
+                    "user_id": 2,
+                    "createdAt": "2023-11-26T20:50:24.000Z"
+                  },
+                  {
+                    "request_id": 12,
+                    "input": "After barely surviving Thunder, Roderick lands a spot as a surgeon’s mate on the Lizard, which is sa",
+                    "output": "made up text summary generated using my 2 bare hands",
+                    "user_id": 1,
+                    "createdAt": "2023-11-26T23:58:13.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/requests/users": {
+      "get": {
+        "tags": ["[ADMIN] - Get All Users"],
+        "summary": "Get all users",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "user_id": 2,
+                    "username": "john",
+                    "userType": "USER"
+                  },
+                  {
+                    "user_id": 1,
+                    "username": "admin",
+                    "userType": "ADMIN"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/requests/log": {
+      "get": {
+        "tags": ["[ADMIN] - Get All Endpoint Count"],
+        "summary": "Get all endpoint request count",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "path": "/api/v1/text/summarise",
+                    "method": "POST",
+                    "request_count": "5"
+                  },
+                  {
+                    "path": "/api/v1/auth/me",
+                    "method": "GET",
+                    "request_count": "89"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/auth/privileges": {
+      "put": {
+        "tags": ["[ADMIN] - Change User Privileges"],
+        "summary": "Change a user's user type",
+        "requestBody": {
+          "description": "Request body for user privileges",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserTypeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
     }
   }
 }
+
