@@ -55,7 +55,14 @@ async function bootstrap() {
     }),
   );
 
-  app.use('/api/v1/ai/gen', authMiddleware, proxy(process.env.GEN_AI_URL));
+  app.use(
+    '/api/v1/ai/gen',
+    authMiddleware,
+    requestTrackerCheck,
+    proxy(process.env.GEN_AI_URL, {
+      userResDecorator: requestTrackerInsert,
+    }),
+  );
 
   app.use(
     '/api/v1/requests',

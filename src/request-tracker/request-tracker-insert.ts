@@ -24,7 +24,7 @@ export const requestTrackerInsert = async (
     data: {
       user_id: user['id'],
       input: userReq.body['text'],
-      output: data['summary_text'],
+      output: data['result_text'],
     },
     validateStatus: () => true,
   });
