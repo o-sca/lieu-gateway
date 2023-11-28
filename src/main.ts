@@ -35,7 +35,7 @@ async function bootstrap() {
     app.set('trust proxy', 1);
   }
 
-  app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
+  app.use('/docs', swagger.serve, swagger.setup(swaggerDoc));
 
   app.use(logEndpoint);
 

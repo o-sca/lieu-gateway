@@ -1,6 +1,9 @@
 import { Request } from 'express';
 
 export const requestPathResolve = async (req: Request) => {
-  const updatedPath = req.path + '?user_id=' + req['user']['id'];
-  return updatedPath;
+  if (req.url.includes('?')) {
+    req.url += `&user_id=${req['user']['id']}`;
+    return req.url;
+  }
+  return req.url + `?user_id=${req['user']['id']}`;
 };
