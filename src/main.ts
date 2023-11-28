@@ -7,7 +7,10 @@ import {
   requestTrackerCreate,
   requestTrackerInsert,
   requestTrackerCheck,
-} from './request-tracker.handler';
+  filterRequestPath,
+  requestPathResolve,
+} from './request-tracker';
+import { logEndpoint } from './request-tracker/log-endpoint';
 
 async function bootstrap() {
   const app = express();
@@ -25,6 +28,8 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
   }
+
+  app.use(logEndpoint);
 
   app.use(
     '/api/v1/auth',
@@ -48,19 +53,8 @@ async function bootstrap() {
     '/api/v1/requests',
     authMiddleware,
     proxy(process.env.REQUEST_TRACKER_URL, {
-      filter: (req) => {
-        if (req.path === '/create' || req.path === '/insert') {
-          return false;
-        }
-        if (req.path === '/all' && req['user']['user_type'] !== 'ADMIN') {
-          return false;
-        }
-        return true;
-      },
-      proxyReqPathResolver: (req) => {
-        const updatedPath = req.path + '?user_id=' + req['user']['id'];
-        return updatedPath;
-      },
+      filter: filterRequestPath,
+      proxyReqPathResolver: requestPathResolve,
     }),
   );
 
