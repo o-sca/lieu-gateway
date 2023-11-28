@@ -366,6 +366,30 @@
             "description": "Unauthorized"
           }
         }
+      },
+      "delete": {
+        "tags": ["Delete User Request By Id"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "schema": {
+              "type": "number"
+            },
+            "description": "request id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
       }
     },
     "/requests/all": {
@@ -486,4 +510,3 @@
     }
   }
 }
-
