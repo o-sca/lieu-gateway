@@ -1,16 +1,18 @@
-import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
-import * as express from 'express';
-import * as proxy from 'express-http-proxy';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import proxy from 'express-http-proxy';
+import swagger from 'swagger-ui-express';
 import { authMiddleware } from './auth.middleware';
 import {
+  filterRequestPath,
+  logEndpoint,
+  requestPathResolve,
+  requestTrackerCheck,
   requestTrackerCreate,
   requestTrackerInsert,
-  requestTrackerCheck,
-  filterRequestPath,
-  requestPathResolve,
 } from './request-tracker';
-import { logEndpoint } from './request-tracker/log-endpoint';
+import swaggerDoc from './api-docs.json';
 
 async function bootstrap() {
   const app = express();
@@ -19,7 +21,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: ['http://localhost:4200', /\.vercel\.app$/],
+      origin: [
+        'http://localhost:4200',
+        'http://localhost:8000',
+        /\.vercel\.app$/,
+      ],
       credentials: true,
       methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'HEAD'],
     }),
@@ -28,6 +34,8 @@ async function bootstrap() {
   if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
   }
+
+  app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
 
   app.use(logEndpoint);
 
