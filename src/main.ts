@@ -27,7 +27,7 @@ async function bootstrap() {
         /\.vercel\.app$/,
       ],
       credentials: true,
-      methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'HEAD'],
+      methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'HEAD', 'DELETE'],
     }),
   );
 

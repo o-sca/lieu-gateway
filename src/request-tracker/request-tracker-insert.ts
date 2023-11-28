@@ -7,7 +7,7 @@ export const requestTrackerInsert = async (
   proxyResData: Buffer,
   userReq: Request & { user?: unknown },
 ): Promise<Buffer> => {
-  if (userReq.path !== '/summarise') {
+  if (userReq.path !== '/summarise' && userReq.path !== '/generate') {
     return proxyResData;
   }
 
